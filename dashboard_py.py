@@ -263,7 +263,8 @@ with tab3:
             name='Qualidade x Preço',
             boxpoints='all',
             jitter=0.3,
-            marker=dict(size=4, opacity=0.5),
+            marker=dict(size=4, opacity=0.5)
+        ),
         row=1, col=2
     )
     
