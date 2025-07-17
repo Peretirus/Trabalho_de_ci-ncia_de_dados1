@@ -326,3 +326,46 @@ with tab3:
 # Rodapé
 st.markdown("---")
 st.markdown("**Dashboard desenvolvido com Streamlit e Plotly** | Dados: Ames Housing Dataset")
+# --- Regressão Linear para prever SalePrice ---
+from sklearn.model_selection import train_test_split
+from sklearn.linear_model import LinearRegression
+from sklearn.metrics import mean_absolute_error
+
+st.header("📈 Previsão de Preço com Regressão Linear")
+
+# Selecionar algumas variáveis preditoras
+features = ['OverallQual', 'GrLivArea', 'GarageCars', 'TotalBsmtSF', 'FullBath', 'YearBuilt']
+
+# Garantir que não há valores ausentes nas colunas selecionadas
+df_model = df[features + ['SalePrice']].dropna()
+
+X = df_model[features]
+y = df_model['SalePrice']
+
+# Treinamento e teste
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+
+model = LinearRegression()
+model.fit(X_train, y_train)
+
+y_pred = model.predict(X_test)
+mae = mean_absolute_error(y_test, y_pred)
+
+st.markdown(f"Erro médio absoluto do modelo (MAE): **${mae:,.2f}**")
+
+# Interface para prever novo valor
+st.subheader("🔍 Faça sua própria previsão")
+
+input_data = {}
+for feature in features:
+    valor = st.number_input(
+        f"{feature}",
+        float(df_model[feature].min()),
+        float(df_model[feature].max()),
+        float(df_model[feature].mean())
+    )
+    input_data[feature] = valor
+
+input_df = pd.DataFrame([input_data])
+pred = model.predict(input_df)[0]
+st.success(f"📊 Preço de venda previsto: **${pred:,.2f}**")
