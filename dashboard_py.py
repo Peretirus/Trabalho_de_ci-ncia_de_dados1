@@ -369,3 +369,26 @@ for feature in features:
 input_df = pd.DataFrame([input_data])
 pred = model.predict(input_df)[0]
 st.success(f"📊 Preço de venda previsto: **${pred:,.2f}**")
+
+from sklearn.linear_model import LinearRegression
+from sklearn.model_selection import train_test_split
+from sklearn.metrics import mean_squared_error
+
+# Carregamento dos dados
+df = pd.read_csv("train.csv")
+df = df.dropna(subset=features + ['SalePrice'])
+
+# Separar variáveis
+X = df[features]
+y = df['SalePrice']
+
+# Dividir os dados
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+
+# Treinar o modelo
+model = LinearRegression()
+model.fit(X_train, y_train)
+
+# Avaliar o modelo
+y_pred = model.predict(X_test)
+mse = mean_squared_error(y_test, y_pred)
